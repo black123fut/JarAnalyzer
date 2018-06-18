@@ -10,6 +10,7 @@ import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser.ExtensionFilter;
+import main.java.api.VisFx;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +19,7 @@ public class MainWindow {
     private Stage stage;
     private AnchorPane pane;
 
-    public MainWindow() throws IOException{
+    public MainWindow() {
         stage = new Stage();
         pane = new AnchorPane();
 
@@ -42,11 +43,14 @@ public class MainWindow {
             } catch (IOException e){
                 e.printStackTrace();
             }
+            catch (Exception e){
+                e.printStackTrace();
+            }
         });
         pane.getChildren().add(button);
     }
 
-    private void openFileChooser() throws IOException {
+    private void openFileChooser() throws IOException, Exception {
         FileChooser fc = new FileChooser();
         fc.setInitialDirectory(new File("/Users/isaacbenavides/Documents"));
         fc.getExtensionFilters().addAll(new ExtensionFilter("JAR", "*.jar"));
@@ -56,8 +60,9 @@ public class MainWindow {
         if (jarFile != null){
             System.out.println("got it");
             Analizer analizer = new Analizer(jarFile);
-            analizer.printData();
+            analizer.generateGraph2();
 
+            VisFx.graphNetwork(analizer.getVisualGraph(), stage);
         } else {
             System.out.println("Null file");
         }
@@ -71,12 +76,11 @@ public class MainWindow {
         titule.setTranslateY(50);
         pane.getChildren().add(titule);
 
-        Image backgroundImage = new Image("resources/background.jpg");
+        Image backgroundImage = new Image("images/background.jpg");
 
         BackgroundImage background = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT,
                 BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, null);
 
-        //Agrega el fondo al Pane del menu
         pane.setBackground(new Background(background));
     }
 }
