@@ -64,7 +64,6 @@ public class Analizer extends JarFile {
                         num++;
                         continue outerloop;
                     }
-
                 }
                 dependencesNodes.add(new VisNode(index, dependenciesList.get(num)));
                 num++;
@@ -107,9 +106,7 @@ public class Analizer extends JarFile {
                         vertex2 = i;
                     }
                 }
-
                 VisEdge edge;
-                System.out.println(error);
                 if (error == 1){
                     edge = new VisEdge(jarNodes.get(vertex1), jarNodes.get(vertex2), "to",
                             "");
@@ -305,6 +302,10 @@ public class Analizer extends JarFile {
             data = "";
         }
         return data;
+    }
+
+    public Graph<String> getGraph(){
+        return graph;
     }
 
     private String getDependence(String data){

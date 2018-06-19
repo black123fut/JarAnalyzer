@@ -7,6 +7,7 @@ import java.util.Optional;
 public class GraphNode<T> {
     private T vertex;
     private List<GraphEdge<T>> edges;
+    private int entrante;
     private GraphNode<T> parent;
     private boolean isVisited;
 
@@ -50,8 +51,16 @@ public class GraphNode<T> {
         return edges;
     }
 
-    public int getEdgeCount(){
+    public int getSaliente(){
         return edges.size();
+    }
+
+    public void setEntrante(int entrante){
+        this.entrante = entrante;
+    }
+
+    public int getEntrante(){
+        return entrante;
     }
 
     public GraphNode<T> getParent(){

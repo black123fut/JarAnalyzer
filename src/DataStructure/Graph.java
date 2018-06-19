@@ -5,6 +5,8 @@ import java.util.Map;
 
 public class Graph<T> {
     private int errorState = 0;
+    private LinkedList<T> list;
+    private LinkedList<GraphNode<T>> nodeList;
     private Map<T, GraphNode<T>> adjacencyList;
 
     public Graph(){
@@ -29,6 +31,7 @@ public class Graph<T> {
         }
         GraphNode<T> node1 = getNode(vertex1);
         GraphNode<T> node2 = getNode(vertex2);
+        node2.setEntrante(node2.getEntrante() + 1);
         return node1.addEdge(node2, weight);
     }
 
@@ -57,7 +60,7 @@ public class Graph<T> {
     public int edgeCount(){
         return adjacencyList.values()
                 .stream()
-                .mapToInt(GraphNode::getEdgeCount)
+                .mapToInt(GraphNode::getSaliente)
                 .sum();
     }
 
@@ -72,7 +75,24 @@ public class Graph<T> {
         return getNode(vertex1).hasEdge(getNode(vertex2));
     }
 
-    private GraphNode<T> getNode(T value){
+    public LinkedList<T> getList(){
+        list = new LinkedList<>();
+        adjacencyList.keySet().forEach(key -> {
+        list.add(key);
+        });
+        return list;
+    }
+
+    public LinkedList<GraphNode<T>> getNodeList(){
+        nodeList = new LinkedList<>();
+        adjacencyList.keySet().forEach(key -> {
+            GraphNode<T> node = getNode(key);
+            nodeList.add(node);
+        });
+        return nodeList;
+    }
+
+    public GraphNode<T> getNode(T value){
         return adjacencyList.get(value);
     }
 
@@ -90,8 +110,8 @@ public class Graph<T> {
 
         adjacencyList.keySet().forEach(key -> {
             GraphNode<T> node = getNode(key);
-            System.out.println(key.toString() + "     " + node.getEdgeCount());
-            if (!(node.getEdgeCount() > 0)){
+            System.out.println(key.toString() + "     " + node.getSaliente());
+            if (!(node.getSaliente() > 0)){
                 errorState = 1;
             }
         });

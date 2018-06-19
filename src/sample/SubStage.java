@@ -23,9 +23,11 @@ import java.util.jar.JarFile;
 public class SubStage {
     private Stage mainStage;
     private Stage stage;
+    private int index = 0;
 
     private File file;
     private Graph<String> graph;
+    private Graph<String> mainGraph;
     private VisGraph visGraph;
 
     private VBox layout;
@@ -34,9 +36,10 @@ public class SubStage {
     private LinkedList<String> jars;
     private Analizer analizer;
 
-    public SubStage(LinkedList<String> jars, File file, Stage mainStage, Analizer analizer){
+    public SubStage(LinkedList<String> jars, File file, Stage mainStage, Analizer analizer, Graph<String> mainGraph){
         this.jars = jars;
         this.file = file;
+        this.mainGraph = mainGraph;
         this.mainStage = mainStage;
         this.analizer = analizer;
         stage = new Stage();
@@ -60,6 +63,7 @@ public class SubStage {
     private void createButtons(){
         Button button = new Button("Seleccionar");
         button.setOnAction(e -> {
+            index = 1;
             zoomIn(listView.getSelectionModel().getSelectedItem());
             generateClassGraph();
             VisFx.graphNetwork(getVisGraph(), mainStage);
@@ -67,10 +71,22 @@ public class SubStage {
 
         Button regresar = new Button("Regresar");
         regresar.setOnAction(e -> {
+            index = 0;
             VisFx.graphNetwork(analizer.getVisualGraph(), mainStage);
         });
 
-        layout.getChildren().addAll(button, regresar);
+        Button metricas = new Button("Metricas");
+        metricas.setOnAction(e -> {
+            if (index == 0){
+                new MetricsWindow(mainGraph);
+            }
+            if (index == 1){
+                new MetricsWindow(graph);
+            }
+
+        });
+
+        layout.getChildren().addAll(button, regresar, metricas);
     }
 
     private void createListView(){
@@ -119,41 +135,30 @@ public class SubStage {
     }
 
     public void generateClassGraph(){
-        try{
-            graph = new Graph<>();
-            visGraph = new VisGraph();
-            JarFile jarFile = new JarFile(file);
-//            Enumeration enumeration = jarFile.entries();
-//            while (enumeration.hasMoreElements()){
-//
-//                System.out.println(enumeration.nextElement());
-//            }
-            System.out.println(clasesList.length());
+        graph = new Graph<>();
+        visGraph = new VisGraph();
 
-            for (int i = 0; i < clasesList.length(); i++) {
-                VisNode node1 = new VisNode(i, clasesList.get(i));
+        for (int i = 0; i < clasesList.length(); i++) {
+            VisNode node1 = new VisNode(i, clasesList.get(i));
 
-                graph.addVertex(clasesList.get(i));
-                if ((i + 1) == clasesList.length()){
-                    VisNode node2 = new VisNode(0, clasesList.get(0));
-                    VisEdge visEdge = new VisEdge(node1, node2, "to", "");
+            graph.addVertex(clasesList.get(i));
+            if ((i + 1) == clasesList.length()){
+                VisNode node2 = new VisNode(0, clasesList.get(0));
+                VisEdge visEdge = new VisEdge(node1, node2, "to", "");
 
-                    visGraph.addNodes(node1, node2);
-                    visGraph.addEdges(visEdge);
-                    graph.addEdge(clasesList.get(i), clasesList.get(0));
-                }
-                else{
-                    graph.addVertex(clasesList.get(i  + 1));
-                    VisNode node2 = new VisNode(i + 1, clasesList.get(i + 1));
-                    VisEdge visEdge = new VisEdge(node1, node2, "to", "");
-
-                    visGraph.addNodes(node1, node2);
-                    visGraph.addEdges(visEdge);
-                    graph.addEdge(clasesList.get(i), clasesList.get(i + 1));
-                }
+                visGraph.addNodes(node1, node2);
+                visGraph.addEdges(visEdge);
+                graph.addEdge(clasesList.get(i), clasesList.get(0));
             }
-        }catch (IOException e){
-            e.printStackTrace();
+            else{
+                graph.addVertex(clasesList.get(i  + 1));
+                VisNode node2 = new VisNode(i + 1, clasesList.get(i + 1));
+                VisEdge visEdge = new VisEdge(node1, node2, "to", "");
+
+                visGraph.addNodes(node1, node2);
+                visGraph.addEdges(visEdge);
+                graph.addEdge(clasesList.get(i), clasesList.get(i + 1));
+            }
         }
     }
 }

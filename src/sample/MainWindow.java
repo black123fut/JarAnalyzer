@@ -60,7 +60,7 @@ public class MainWindow {
         if (jarFile != null){
             Analizer analizer = new Analizer(jarFile);
             analizer.generateGraph2();
-            new SubStage(analizer.getJarsList(), jarFile, stage, analizer);
+            new SubStage(analizer.getJarsList(), jarFile, stage, analizer, analizer.getGraph());
             VisFx.graphNetwork(analizer.getVisualGraph(), stage);
         } else {
             System.out.println("Null file");
