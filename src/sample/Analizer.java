@@ -4,6 +4,9 @@ import DataStructure.Graph;
 
 import DataStructure.LinkedList;
 import com.sun.org.apache.xml.internal.security.signature.ReferenceNotInitializedException;
+import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 import main.java.graph.VisEdge;
 import main.java.graph.VisGraph;
 import main.java.graph.VisNode;
@@ -21,13 +24,12 @@ public class Analizer extends JarFile {
     private File file;
     private VisGraph visualGraph;
     private Graph<String> graph;
-    private LinkedList<String> dependencies;
+    private LinkedList<String> jars;
 
 
     public Analizer(String path) throws IOException {
         super(new File(path));
         this.file = new File(path);
-        dependencies = new LinkedList<>();
         graph = new Graph<>();
         visualGraph = new VisGraph();
     }
@@ -35,17 +37,15 @@ public class Analizer extends JarFile {
     public Analizer(File file) throws Exception {
         super(file);
         this.file = file;
-        dependencies = new LinkedList<>();
         graph = new Graph<>();
         visualGraph = new VisGraph();
     }
 
     public void generateGraph2(){
         try{
-            JarFile jarFile = new JarFile(file);
-
             LinkedList<String> jarsList = getJars();
             LinkedList<String> dependenciesList = getDependencies();
+            jars = jarsList;
 
             LinkedList<VisNode> jarNodes = new LinkedList<>();
             for (int i = 0; i < jarsList.length(); i++) {
@@ -62,7 +62,6 @@ public class Analizer extends JarFile {
             for (int i = 0; i < dependencesNodes.length(); i++) {
                 visualGraph.addNodes(dependencesNodes.get(i));
             }
-
 
             Runtime rt = Runtime.getRuntime();
             Process proc = rt.exec("jdeps " + file.getPath());
@@ -84,11 +83,22 @@ public class Analizer extends JarFile {
                 }
 
                 VisEdge edge = new VisEdge(jarNodes.get(vertex1), dependencesNodes.get(vertex2), "to",
-                        "                               ");
+                        "");
                 visualGraph.addEdges(edge);
             }
 
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+    }
 
+    public void classes(){
+        try{
+            JarFile jarFile = new JarFile(file);
+            Enumeration enumeration = jarFile.entries();
+            while (enumeration.hasMoreElements()){
+                System.out.println(enumeration.nextElement());
+            }
         } catch (IOException e){
             e.printStackTrace();
         }
@@ -233,14 +243,15 @@ public class Analizer extends JarFile {
 //            }
 
 //            Obtiene los archivos dentro del jar
-//            Enumeration enumeration = jarFile.entries();
-//            while (enumeration.hasMoreElements()){
-//                System.out.println(enumeration.nextElement());
-//            }
+
 
         } catch (IOException e){
             e.printStackTrace();
         }
+    }
+
+    public LinkedList<String> getJarsList(){
+        return jars;
     }
 
     public VisGraph getVisualGraph(){
@@ -273,33 +284,3 @@ public class Analizer extends JarFile {
         return data;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
