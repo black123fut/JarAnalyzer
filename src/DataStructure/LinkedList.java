@@ -88,6 +88,20 @@ public class LinkedList<T> {
         return null;
     }
 
+    public boolean contains(T data){
+        if (head != null){
+            Node<T> tmp = head;
+
+            while (tmp != null){
+                if (tmp.getData() == data){
+                    return true;
+                }
+                tmp = tmp.getNext();
+            }
+        }
+        return false;
+    }
+
     public Node<T> getNode(int index){
         if (this.head != null && index <= size){
             Node<T> tmp = head;

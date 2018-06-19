@@ -36,6 +36,14 @@ public class SubStage {
     private LinkedList<String> jars;
     private Analizer analizer;
 
+    /**
+     * Constructor.
+     * @param jars Lista de jars.
+     * @param file Archivo para el grafo de clses.
+     * @param mainStage Stage principal de la aplicacion.
+     * @param analizer Analizador principal.
+     * @param mainGraph grafo principal.
+     */
     public SubStage(LinkedList<String> jars, File file, Stage mainStage, Analizer analizer, Graph<String> mainGraph){
         this.jars = jars;
         this.file = file;
@@ -60,7 +68,11 @@ public class SubStage {
         return visGraph;
     }
 
+    /**
+     * Crea botones.
+     */
     private void createButtons(){
+        //Boton para seleccionar el jar el cual se quieren ver las clases.
         Button button = new Button("Seleccionar");
         button.setOnAction(e -> {
             index = 1;
@@ -69,19 +81,21 @@ public class SubStage {
             VisFx.graphNetwork(getVisGraph(), mainStage);
         });
 
+        //Regresa al grafo principal.
         Button regresar = new Button("Regresar");
         regresar.setOnAction(e -> {
             index = 0;
             VisFx.graphNetwork(analizer.getVisualGraph(), mainStage);
         });
 
+        //Muestra las metricas del grafo.
         Button metricas = new Button("Metricas");
         metricas.setOnAction(e -> {
             if (index == 0){
-                new MetricsWindow(mainGraph);
+                new MetricsWindow(mainGraph, 0);
             }
             if (index == 1){
-                new MetricsWindow(graph);
+                new MetricsWindow(graph, 1);
             }
 
         });
@@ -89,6 +103,9 @@ public class SubStage {
         layout.getChildren().addAll(button, regresar, metricas);
     }
 
+    /**
+     * Crea la listView que muestra los jars.
+     */
     private void createListView(){
         listView = new ListView<>();
         for (int i = 0; i < jars.length(); i++) {
@@ -99,6 +116,10 @@ public class SubStage {
         layout.getChildren().add(listView);
     }
 
+    /**
+     * Busca las clases de un jar.
+     * @param text Jar del ual busca las clases.
+     */
     private void zoomIn(String text){
         text = text.replace(".", "/") + "/";
         try{
@@ -106,6 +127,7 @@ public class SubStage {
             clasesList = new LinkedList<>();
             JarFile jarFile = new JarFile(file);
             Enumeration enumeration = jarFile.entries();
+            //Abre los archivos de una ruta.
             while (enumeration.hasMoreElements()){
                 int error = 0;
                 String direccion = enumeration.nextElement().toString();
@@ -125,19 +147,19 @@ public class SubStage {
                         clasesList.add(direccion);
                 }
             }
-//            for (int i = 0; i < clasesList.length(); i++) {
-//                System.out.println(clasesList.get(i));
-//            }
-
         } catch (IOException e){
             e.printStackTrace();
         }
     }
 
+    /**
+     * Genera el grafo de clases.
+     */
     public void generateClassGraph(){
         graph = new Graph<>();
         visGraph = new VisGraph();
 
+        //Hace virtual el grafo de clases.
         for (int i = 0; i < clasesList.length(); i++) {
             VisNode node1 = new VisNode(i, clasesList.get(i));
 

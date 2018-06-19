@@ -8,6 +8,7 @@ public class GraphNode<T> {
     private T vertex;
     private List<GraphEdge<T>> edges;
     private int entrante;
+    private int jarEntrante;
     private GraphNode<T> parent;
     private boolean isVisited;
 
@@ -47,7 +48,7 @@ public class GraphNode<T> {
                 .findFirst();
     }
 
-    public List<GraphEdge<T>> edges(){
+    public List<GraphEdge<T>> getEdges(){
         return edges;
     }
 
@@ -61,6 +62,14 @@ public class GraphNode<T> {
 
     public int getEntrante(){
         return entrante;
+    }
+
+    public void setJarEntrante(int jarEntrante){
+        this.jarEntrante = jarEntrante;
+    }
+
+    public int getJarEntrante(){
+        return jarEntrante;
     }
 
     public GraphNode<T> getParent(){
