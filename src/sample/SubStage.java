@@ -29,15 +29,16 @@ public class SubStage {
     private VisGraph visGraph;
 
     private VBox layout;
-    private Button button;
     private ListView<String> listView;
     private LinkedList<String> clasesList;
     private LinkedList<String> jars;
+    private Analizer analizer;
 
-    public SubStage(LinkedList<String> jars, File file, Stage mainStage){
+    public SubStage(LinkedList<String> jars, File file, Stage mainStage, Analizer analizer){
         this.jars = jars;
         this.file = file;
         this.mainStage = mainStage;
+        this.analizer = analizer;
         stage = new Stage();
         stage.setResizable(false);
         layout = new VBox();
@@ -57,14 +58,19 @@ public class SubStage {
     }
 
     private void createButtons(){
-        button = new Button("Seleccionar");
+        Button button = new Button("Seleccionar");
         button.setOnAction(e -> {
             zoomIn(listView.getSelectionModel().getSelectedItem());
             generateClassGraph();
             VisFx.graphNetwork(getVisGraph(), mainStage);
         });
 
-        layout.getChildren().add(button);
+        Button regresar = new Button("Regresar");
+        regresar.setOnAction(e -> {
+            VisFx.graphNetwork(analizer.getVisualGraph(), mainStage);
+        });
+
+        layout.getChildren().addAll(button, regresar);
     }
 
     private void createListView(){

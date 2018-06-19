@@ -58,12 +58,9 @@ public class MainWindow {
         File jarFile = fc.showOpenDialog(null);
 
         if (jarFile != null){
-            System.out.println("got it");
             Analizer analizer = new Analizer(jarFile);
             analizer.generateGraph2();
-
-            new SubStage(analizer.getJarsList(), jarFile, stage);
-
+            new SubStage(analizer.getJarsList(), jarFile, stage, analizer);
             VisFx.graphNetwork(analizer.getVisualGraph(), stage);
         } else {
             System.out.println("Null file");

@@ -56,9 +56,22 @@ public class Analizer extends JarFile {
             }
 
             LinkedList<VisNode> dependencesNodes = new LinkedList<>();
+            int index = jarsList.length(), num = 0;
+            outerloop:
             for (int i = 0; i < dependenciesList.length(); i++) {
-                dependencesNodes.add(new VisNode(jarsList.length() + i, dependenciesList.get(i)));
+                for (int j = 0; j < jarsList.length(); j++) {
+                    if (jarsList.get(j).equals(dependenciesList.get(i))){
+                        num++;
+                        continue outerloop;
+                    }
+
+                }
+                dependencesNodes.add(new VisNode(index, dependenciesList.get(num)));
+                num++;
+                index++;
             }
+
+
             for (int i = 0; i < dependencesNodes.length(); i++) {
                 visualGraph.addNodes(dependencesNodes.get(i));
             }
@@ -72,20 +85,43 @@ public class Analizer extends JarFile {
                 int vertex1 = 0, vertex2 = 0;
                 String dependence = getDependence(s);
                 String jar = getJar(s);
+                graph.addVertex(jar);
+                graph.addVertex(dependence);
+                graph.addEdge(jar, dependence);
 
                 for (int i = 0; i < jarNodes.length(); i++) {
                     if (jarNodes.get(i).getLabel().equals("Jar: \n" + jar))
                         vertex1 = i;
                 }
+                int error = 0;
                 for (int i = 0; i < dependencesNodes.length(); i++) {
-                    if (dependencesNodes.get(i).getLabel().equals(dependence))
+                    error = 0;
+                    for (int j = 0; j < jarNodes.length(); j++) {
+                        if (jarNodes.get(j).getLabel().equals("Jar: \n" + dependence)){
+                            vertex2 = j;
+                            error = 1;
+                            break;
+                        }
+                    }
+                    if (dependencesNodes.get(i).getLabel().equals(dependence)){
                         vertex2 = i;
+                    }
                 }
 
-                VisEdge edge = new VisEdge(jarNodes.get(vertex1), dependencesNodes.get(vertex2), "to",
-                        "");
+                VisEdge edge;
+                System.out.println(error);
+                if (error == 1){
+                    edge = new VisEdge(jarNodes.get(vertex1), jarNodes.get(vertex2), "to",
+                            "");
+                }
+                else{
+                    edge = new VisEdge(jarNodes.get(vertex1), dependencesNodes.get(vertex2), "to",
+                            "");
+                }
                 visualGraph.addEdges(edge);
             }
+
+            System.out.println("Conexo:    " + graph.isRelated());
 
         } catch (IOException e){
             e.printStackTrace();

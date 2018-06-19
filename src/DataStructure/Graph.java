@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Graph<T> {
+    private int errorState = 0;
     private Map<T, GraphNode<T>> adjacencyList;
 
     public Graph(){
@@ -81,6 +82,25 @@ public class Graph<T> {
             node.setParent(null);
             node.setVisited(false);
         });
+    }
+
+    public boolean isRelated(){
+
+
+
+        adjacencyList.keySet().forEach(key -> {
+            GraphNode<T> node = getNode(key);
+            System.out.println(key.toString() + "     " + node.getEdgeCount());
+            if (!(node.getEdgeCount() > 0)){
+                errorState = 1;
+            }
+        });
+        if (errorState == 1){
+            errorState = 0;
+            return false;
+        }
+        else
+            return true;
     }
 }
 
